@@ -1,45 +1,84 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
-using UnityEngine;
 
-public class NPCBehavior : MonoBehaviour,  IPointerClickHandler {
-    
+public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
+
     public NavMeshAgent agent;
     public Transform pointOfInterest;
-    List<Vector3> poiList;
-    List<GameObject> allPois;
-    // Update is called once per frame
+    private List<Vector3> poiList;  
+    private List<GameObject> allPois;
+    private bool isCriminal;
+    private int currentPOIIndex = 0;
+
     float currentTime;
-    void Start() {
+
+    protected virtual void Start() {
         currentTime = Time.time;
-        pointOfInterest = GameObject.Find("POI").transform;
+
+        // Ensure agent is assigned
+        if (agent == null) {
+            agent = GetComponent<NavMeshAgent>();
+            if (agent == null) {
+                Debug.LogError("NavMeshAgent component is missing on " + gameObject.name);
+                return;
+            }
+        }
+
         allPois = new List<GameObject>(GameObject.FindGameObjectsWithTag("poitag"));
         poiList = new List<Vector3>();
-        int howManyPOIs = UnityEngine.Random.Range(1, allPois.Count);
-        for(int i = 0; i < howManyPOIs; i++){ //How many pois should we assign  to each npc?
-           int whichRemoved = UnityEngine.Random.Range(0, allPois.Count); //Remove the poi from the list to make sure we don't add the same poi twice to a npc's poilist
-           poiList.Add(allPois[whichRemoved].transform.position);
-           Debug.Log("what I added: " + poiList[poiList.Count - 1]);
-           allPois.RemoveAt(whichRemoved);
+
+        if (allPois.Count == 0) {
+            Debug.LogError("No POIs found with tag 'poitag'.");
+            return;
         }
-        agent.SetDestination(pointOfInterest.position);
+
+        // Assign POIs based on whether the NPC is a criminal
+        if (isCriminal) {
+            foreach (var poi in allPois) {
+                poiList.Add(poi.transform.position);
+            }
+        } else {
+            int howManyPOIs = UnityEngine.Random.Range(1, allPois.Count);
+            List<GameObject> tempPois = new List<GameObject>(allPois);
+
+            for (int i = 0; i < howManyPOIs; i++) {
+                int whichRemoved = UnityEngine.Random.Range(0, tempPois.Count);
+                poiList.Add(tempPois[whichRemoved].transform.position);
+                tempPois.RemoveAt(whichRemoved);
+            }
+        }
+
+        if (poiList.Count > 0) {
+            MoveToNextPOI();
+        } else {
+            Debug.LogWarning("POI list is empty for " + gameObject.name);
+        }
     }
 
-    void Update()
-    {
-        if((Time.time - currentTime) >= 10){
-            currentTime = Time.time;
-            Vector3 newPOI = poiList[(UnityEngine.Random.Range(0, poiList.Count))];
-            Debug.Log("new poi: " + newPOI);
-            agent.SetDestination(newPOI);
+    void MoveToNextPOI() {
+        if (poiList == null || poiList.Count == 0 || agent == null) return;
+        
+        agent.SetDestination(poiList[currentPOIIndex]);
+    }
+
+    void Update() {
+        if (agent != null && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance) {
+            currentPOIIndex = (currentPOIIndex + 1) % poiList.Count;
+            if (isCriminal) {
+                Debug.Log("criminal: " + agent.name + " has visited a POI: " + currentPOIIndex);
+            }
+            MoveToNextPOI();
         }
-        return;
+    }
+
+    public void SetCriminalStatus(bool status) {
+        isCriminal = status;
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        Debug.Log("down");
+        Debug.Log("Are they a criminal? " + isCriminal);
     }
 }
