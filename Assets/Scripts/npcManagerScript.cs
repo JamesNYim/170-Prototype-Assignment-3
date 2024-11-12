@@ -4,10 +4,10 @@ using System.Collections.Generic;
 public class npcManagerScript : MonoBehaviour
 {
     public Material civilianMaterial;  
-    public Material criminalMaterial; 
+    public Material markedMaterial; 
 
     List<GameObject> npcList;
-    int NPC_COUNT = 2;
+    int NPC_COUNT = 20;
     float criminalSpawnChance = 0.5f;
 
     void Start()
@@ -35,7 +35,7 @@ public class npcManagerScript : MonoBehaviour
                 GameObject criminal= Instantiate(criminalPrefab);
                 npcList.Add(criminal);
                 //var criminal = npc.AddComponent<CriminalBehavior>();
-                //criminal.SetMaterial(criminalMaterial);  // Assign criminal material
+                //criminal.SetMaterial(markedMaterial);  // Assign criminal material
             }
         }
     }

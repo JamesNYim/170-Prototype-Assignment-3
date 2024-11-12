@@ -6,7 +6,5 @@ public class CriminalBehavior : NPCBehavior {
         base.Start();  // Initialize base NPC behavior
           // Set this NPC as a criminal
     }
-    public void SetMaterial(Material material) {
-        GetComponent<Renderer>().material = material;
-    }
+    
 }
