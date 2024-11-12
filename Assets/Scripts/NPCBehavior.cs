@@ -43,7 +43,7 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
         } else {
             int howManyPOIs = UnityEngine.Random.Range(1, allPois.Count);
             List<GameObject> tempPois = new List<GameObject>(allPois);
-
+            //Debug.Log("how many pois: " + howManyPOIs);
             for (int i = 0; i < howManyPOIs; i++) {
                 int whichRemoved = UnityEngine.Random.Range(0, tempPois.Count);
                 poiList.Add(tempPois[whichRemoved].transform.position);
