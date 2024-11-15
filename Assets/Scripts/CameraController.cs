@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 public class CameraController : MonoBehaviour {
     public float sensitivityX = 100f;
     public float sensitivityY = 100f;
@@ -12,15 +13,24 @@ public class CameraController : MonoBehaviour {
     public int playerLives = 5;
     public TMP_Text livesText;
     public TMP_Text statusText; 
-    
     public Material markedMaterial;
-
+    GameObject mainCamera;
+    private List<Vector3> cameraList= new List<Vector3>{new Vector3(-409.16f, 100.0f, -353.59f), new Vector3(-395.2f, 100.0f, 401.7f), new Vector3(-33.0f, 100.0f, -353.59f), new Vector3(51.0f, 100.0f, 330.0f), new Vector3(18.0f, 100.0f, 76.0f), new Vector3(419.58f, 100.0f, -348.83f), new Vector3(419.58f, 100.0f, -42.1f), new Vector3(334.0f, 100.0f, 216.0f)};
     void Start() {
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
         UpdateLivesText();
-    }
+        //Original camera position: 25 724 -387
+        mainCamera = GameObject.Find("Main Camera");
 
+    }
+    public void SetCameraPos(int which){
+        mainCamera.transform.position = cameraList[which - 1];
+    }
     void Update() {
+        if (Input.GetKeyDown("1"))
+        {
+            mainCamera.transform.position = new Vector3(-409.16f, 100.0f, -353.59f);
+        }
         // Handle camera rotation
         float mouseX = Input.GetAxis("Mouse X") * sensitivityY * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * sensitivityX * Time.deltaTime;
