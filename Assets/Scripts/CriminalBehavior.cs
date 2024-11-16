@@ -2,9 +2,8 @@ using UnityEngine;
 
 public class CriminalBehavior : NPCBehavior {
     void Start() {
-        SetCriminalStatus(true);
-        base.Start();  // Initialize base NPC behavior
-          // Set this NPC as a criminal
+        SetCriminalStatus(true);      // Set this NPC as a criminal
+        base.initializeAIBehavior();  // Initialize base NPC behavior
     }
     
 }

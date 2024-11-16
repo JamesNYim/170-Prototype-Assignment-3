@@ -15,13 +15,15 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
 
     float currentTime;
 
-    protected virtual void Start() {
+    protected virtual void initializeAIBehavior()
+    {
         currentTime = Time.time;
 
-        // Ensure agent is assigned
-        if (agent == null) {
+        if (agent == null)
+        {
             agent = GetComponent<NavMeshAgent>();
-            if (agent == null) {
+            if (agent == null)
+            {
                 Debug.LogError("NavMeshAgent component is missing on " + gameObject.name);
                 return;
             }
@@ -30,22 +32,26 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
         allPois = new List<GameObject>(GameObject.FindGameObjectsWithTag("poitag"));
         poiList = new List<Vector3>();
 
-        if (allPois.Count == 0) {
+        if (allPois.Count == 0)
+        {
             Debug.LogError("No POIs found with tag 'poitag'.");
             return;
         }
 
-        // Assign POIs based on whether the NPC is a criminal
-        if (isCriminal) {
-            foreach (var poi in allPois) {
+        if (isCriminal)
+        {
+            foreach (var poi in allPois)
+            {
                 poiList.Add(poi.transform.position);
             }
             ShuffleList(poiList);
-        } else {
+        }
+        else
+        {
             int howManyPOIs = UnityEngine.Random.Range(1, allPois.Count);
             List<GameObject> tempPois = new List<GameObject>(allPois);
-            //Debug.Log("how many pois: " + howManyPOIs);
-            for (int i = 0; i < howManyPOIs; i++) {
+            for (int i = 0; i < howManyPOIs; i++)
+            {
                 int whichRemoved = UnityEngine.Random.Range(0, tempPois.Count);
                 poiList.Add(tempPois[whichRemoved].transform.position);
                 tempPois.RemoveAt(whichRemoved);
@@ -53,15 +59,21 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
             ShuffleList(poiList);
         }
 
-        if (poiList.Count > 0) {
+        if (poiList.Count > 0)
+        {
             MoveToNextPOI();
-        } else {
+        }
+        else
+        {
             Debug.LogWarning("POI list is empty for " + gameObject.name);
         }
     }
+
+    void Start() {
+        initializeAIBehavior();
+    }
     void Update() {
             if (agent != null && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance) {
-                currentPOIIndex = (currentPOIIndex + 1) % poiList.Count;
                 if (isCriminal) {
                     Debug.Log("criminal: " + agent.name + " has visited a POI: " + currentPOIIndex);
                 }
@@ -71,7 +83,7 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
 
     void MoveToNextPOI() {
         if (poiList == null || poiList.Count == 0 || agent == null) return;
-        
+        currentPOIIndex = (currentPOIIndex + 1) % poiList.Count;
         agent.SetDestination(poiList[currentPOIIndex]);
     }
 

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1096655499090586800}
   m_Layer: 0
   m_Name: Criminal
-  m_TagString: Untagged
+  m_TagString: Crim
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 204e83c2a00121d47bee1c3648039954, type: 2}
+  - {fileID: 2100000, guid: fd2a0a203af098847a4f880ec9ceff4e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

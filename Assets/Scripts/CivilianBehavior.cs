@@ -1,9 +1,11 @@
 using UnityEngine;
 
 public class CivilianBehavior : NPCBehavior {
+
     void Start() {
-        SetCriminalStatus(false);
-        base.Start();  // Initialize base NPC behavior
-          // Set this NPC as a civilian
+        SetCriminalStatus(false);     // Set this NPC as a civilian
+        base.initializeAIBehavior();  // Initialize base NPC behavior
     }
+
+
 }

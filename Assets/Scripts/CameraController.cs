@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using System.Linq;
 public class CameraController : MonoBehaviour {
     public float sensitivityX = 100f;
     public float sensitivityY = 100f;
@@ -10,43 +11,90 @@ public class CameraController : MonoBehaviour {
     private float rotationY = 0f;
     private float rotationZ = 0f;
 
+    private Vector3 origin = new Vector3(12, 70, 37);
+
     public int playerLives = 5;
     public TMP_Text livesText;
     public TMP_Text statusText; 
     public Material markedMaterial;
+    private int cameraIndex;
     GameObject mainCamera;
-    private List<Vector3> cameraList= new List<Vector3>{new Vector3(-409.16f, 100.0f, -353.59f), new Vector3(-395.2f, 100.0f, 401.7f), new Vector3(-33.0f, 100.0f, -353.59f), new Vector3(51.0f, 100.0f, 330.0f), new Vector3(18.0f, 100.0f, 76.0f), new Vector3(419.58f, 100.0f, -348.83f), new Vector3(419.58f, 100.0f, -42.1f), new Vector3(334.0f, 100.0f, 216.0f)};
-    void Start() {
-        //Cursor.lockState = CursorLockMode.Locked;
-        UpdateLivesText();
-        //Original camera position: 25 724 -387
-        mainCamera = GameObject.Find("Main Camera");
+    private List<Vector3> cameraList= new List<Vector3>{
+        new Vector3(-402.7f, 100.0f, -347.6f), 
+        new Vector3(-395.2f, 100.0f, 401.7f), 
+        new Vector3(-33.0f, 100.0f, -353.59f), 
+        new Vector3(51.0f, 100.0f, 330.0f), 
+        new Vector3(18.0f, 100.0f, 76.0f), 
+        new Vector3(419.58f, 100.0f, -348.83f), 
+        new Vector3(419.58f, 100.0f, -42.1f), 
+        new Vector3(334.0f, 100.0f, 216.0f)
+    };
 
+    void Start() {
+        Cursor.lockState = CursorLockMode.Locked;
+        UpdateLivesText();
+        mainCamera = GameObject.Find("Main Camera");
+        mainCamera.transform.position = cameraList[0];
+        mainCamera.transform.LookAt(new Vector3(0, 0, 0));
+        cameraIndex = 0;
     }
     public void SetCameraPos(int which){
         mainCamera.transform.position = cameraList[which - 1];
     }
-    void Update() {
-        if (Input.GetKeyDown("1"))
+
+    public void nextCamera()
+    {
+        cameraIndex++;
+        if (cameraIndex >= cameraList.Count)
         {
-            mainCamera.transform.position = new Vector3(-409.16f, 100.0f, -353.59f);
+            cameraIndex = 0;
         }
-        // Handle camera rotation
-        float mouseX = Input.GetAxis("Mouse X") * sensitivityY * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivityX * Time.deltaTime;
-        
-        if (Input.GetMouseButton(1)) {
-            float mouseZ = Input.GetAxis("Mouse X") * sensitivityZ * Time.deltaTime;
-            rotationZ += mouseZ;
+        mainCamera.transform.position = cameraList[cameraIndex];
+        mainCamera.transform.LookAt(origin);
+    }
+
+    public void previousCamera()
+    {
+        cameraIndex--;
+        if(cameraIndex < 0)
+        {
+            cameraIndex = cameraList.Count - 1;
         }
+        mainCamera.transform.position = cameraList[cameraIndex];
+        mainCamera.transform.LookAt(origin);
+    }
 
-        rotationY += mouseX;
-        rotationX -= mouseY;
-        transform.localRotation = Quaternion.Euler(rotationX, rotationY, rotationZ);
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            previousCamera();
+        } else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            nextCamera();
+        } else
+        {
+            if (!npcManagerScript.instance.isOn)
+            {
+                // Handle camera rotation
+                float mouseX = Input.GetAxis("Mouse X") * sensitivityY * Time.deltaTime;
+                float mouseY = Input.GetAxis("Mouse Y") * sensitivityX * Time.deltaTime;
 
-        // Handle object clicking
-        if (Input.GetMouseButtonDown(0)) {  // Left mouse button
-            ClickObject();
+                if (Input.GetMouseButton(1))
+                {
+                    float mouseZ = Input.GetAxis("Mouse X") * sensitivityZ * Time.deltaTime;
+                    rotationZ += mouseZ;
+                }
+
+                rotationY += mouseX;
+                rotationX -= mouseY;
+                transform.localRotation = Quaternion.Euler(rotationX, rotationY, rotationZ);
+
+                // Handle object clicking
+                if (Input.GetMouseButtonDown(0))
+                {  // Left mouse button
+                    ClickObject();
+                }
+            }
         }
     }
 
