@@ -14,7 +14,6 @@ public class CameraController : MonoBehaviour {
     private Vector3 origin = new Vector3(12, 70, 37);
 
     public int playerLives = 5;
-    public TMP_Text livesText;
     public TMP_Text statusText; 
     public Material markedMaterial;
     private int cameraIndex;
@@ -32,7 +31,6 @@ public class CameraController : MonoBehaviour {
 
     void Start() {
         Cursor.lockState = CursorLockMode.Locked;
-        UpdateLivesText();
         mainCamera = GameObject.Find("Main Camera");
         mainCamera.transform.position = cameraList[0];
         mainCamera.transform.LookAt(new Vector3(0, 0, 0));
