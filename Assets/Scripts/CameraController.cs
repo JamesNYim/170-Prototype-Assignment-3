@@ -121,24 +121,12 @@ public class CameraController : MonoBehaviour {
                 else {
                     Debug.Log(hit.collider.gameObject.name + " is not a criminal.");
                     npcBehavior.SetMaterial(markedMaterial);
-                    DecreaseLives();
+                    
                 }
             }
         }
     }
-     void DecreaseLives()
-    {
-        playerLives--;
-
-        if (playerLives <= 0)
-        {
-            EndGame(false); // Player loses if out of lives
-        }
-        else
-        {
-            UpdateLivesText(); // Update the text with the new number of lives
-        }
-    }
+    
 
     void EndGame(bool success)
     {
@@ -155,9 +143,6 @@ public class CameraController : MonoBehaviour {
         this.enabled = false;
     }
 
-    void UpdateLivesText()
-    {
-        livesText.text = "Lives: " + playerLives; // Update the text to display remaining lives
-    }
+    
 
 }
