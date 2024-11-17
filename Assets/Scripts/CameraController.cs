@@ -11,8 +11,6 @@ public class CameraController : MonoBehaviour {
     private float rotationY = 0f;
     private float rotationZ = 0f;
 
-    private Vector3 origin = new Vector3(12, 70, 37);
-
     public int playerLives = 5;
     public TMP_Text statusText; 
     public Material markedMaterial;
@@ -48,7 +46,7 @@ public class CameraController : MonoBehaviour {
             cameraIndex = 0;
         }
         mainCamera.transform.position = cameraList[cameraIndex];
-        mainCamera.transform.LookAt(origin);
+        mainCamera.transform.LookAt(npcManagerScript.instance.gameObject.transform.position);
     }
 
     public void previousCamera()
@@ -59,7 +57,7 @@ public class CameraController : MonoBehaviour {
             cameraIndex = cameraList.Count - 1;
         }
         mainCamera.transform.position = cameraList[cameraIndex];
-        mainCamera.transform.LookAt(origin);
+        mainCamera.transform.LookAt(npcManagerScript.instance.gameObject.transform.position);
     }
 
     void Update() {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
-using TMPro;
 
 public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
 
@@ -76,21 +75,24 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
     }
     void Update() {
             // If an agent reaches a POI
-            if (agent != null && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance) {
-                if (isCriminal) {
-                    Debug.Log("criminal: " + agent.name + " has visited a POI: " + currentPOIIndex);
-                    criminalVisitedSFX.Play(); 
-                    visitedPOIs++;
+        if (agent != null && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance) {
+            if (isCriminal) {
+                Debug.Log("criminal: " + agent.name + " has visited a POI: " + currentPOIIndex);
+                criminalVisitedSFX.Play(); 
+                visitedPOIs++;
 
-                    // When the criminal visited all POI's start timer
-                    if (visitedPOIs == allPois.Count) {
-                        timer.SetActive(true);
-                        Debug.Log("timer start");
-                    }
+                // When the criminal visited all POI's start timer
+                if (visitedPOIs == allPois.Count) {
+                    npcManagerScript.instance.callEndgameTimer();
                 }
-                MoveToNextPOI();
+
+                // banner stuff
+                npcManagerScript.instance.StartCoroutine("typeString");
             }
+            MoveToNextPOI();
         }
+    }
+
     
     void MoveToNextPOI() {
         if (poiList == null || poiList.Count == 0 || agent == null) return;

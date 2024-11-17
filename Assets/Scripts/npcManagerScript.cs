@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class npcManagerScript : MonoBehaviour
 {
@@ -13,6 +16,17 @@ public class npcManagerScript : MonoBehaviour
 
     public GameObject map;
     public bool isOn;
+
+    public GameObject timer;
+
+    public GameObject banner;
+    public TextMeshProUGUI textMeshProUGUI;
+    private string message = "CRIMINAL HAS VISITED ANOTHER POINT OF INTEREST";
+    private int stringLen;
+    private int currentLen;
+
+    public GameObject endScreen;
+    public AudioSource au;
 
     void Start()
     {
@@ -29,6 +43,30 @@ public class npcManagerScript : MonoBehaviour
             GameObject civilian = Instantiate(civilianPrefab);
             npcList.Add(civilian);
         }
+        stringLen = message.Length;
+    }
+
+    private IEnumerator typeString()
+    {
+        banner.SetActive(true);
+        currentLen = 0;
+        textMeshProUGUI.text = "";
+        while (currentLen <= stringLen)
+        {
+            textMeshProUGUI.text = message.Substring(0, currentLen);
+            currentLen++;
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        yield return new WaitForSeconds(5f);
+
+        banner.SetActive(false);
+    }
+
+    public void callEndgameTimer()
+    {
+        timer.SetActive(true);
+        return;
     }
 
     private void Update()
@@ -39,11 +77,9 @@ public class npcManagerScript : MonoBehaviour
             if (isOn)
             {
                 Cursor.lockState = CursorLockMode.None;
-                //Time.timeScale = 0.0f;
             } else
             {
                 Cursor.lockState = CursorLockMode.Locked;
-                //Time.timeScale = 1.0f;
             }
             map.SetActive(isOn);    
         }
@@ -54,6 +90,22 @@ public class npcManagerScript : MonoBehaviour
 
         yield return new WaitForSeconds(1);
         map.SetActive(!isOn);
+    }
+
+    public void endGame()
+    {
+        Time.timeScale = 0.0f;
+        Cursor.lockState = CursorLockMode.None;
+        endScreen.SetActive(true);
+        au.Stop();
+    }
+
+
+    public void restartScene()
+    {
+        Time.timeScale = 1.0f;
+        Cursor.lockState = CursorLockMode.Locked;
+        SceneManager.LoadScene("SampleScene");
     }
 }
 

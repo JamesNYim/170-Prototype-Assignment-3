@@ -31,18 +31,11 @@ public class ScanManager : MonoBehaviour
     {
         if ((!isScanning))
         {
-            if (roomScan.isInRoom)
-            {
-                StartCoroutine("flashScreenFound");
-            }
-            else 
-            {
-                StartCoroutine("flashScreenNotFound");
-            }
+            StartCoroutine(flashScreenFound(roomScan));
         }
     }
 
-    public IEnumerator flashScreenFound()
+    public IEnumerator flashScreenFound(RoomScan roomScan)
     {
         isScanning = true;
         float elapsed = 0f;
@@ -62,37 +55,20 @@ public class ScanManager : MonoBehaviour
             yield return null; // Wait until the next frame
         }
 
-        audioF.Play();
-        foundScreen.SetActive(true);
-        yield return new WaitForSecondsRealtime(0.5f);
-        foundScreen.SetActive(false);
-        isScanning = false;
-    }
-
-    public IEnumerator flashScreenNotFound()
-    {
-        isScanning = true;
-        float elapsed = 0f;
-
-        // Ensure the slider starts at 0
-        slider.value = 0f;
-
-        // Loop over the duration
-        while (elapsed < duration)
+        if(roomScan.isInRoom)
         {
-            // Increment elapsed time
-            elapsed += Time.unscaledDeltaTime;
-
-            // Update slider value (normalized between 0 and 1)
-            slider.value = Mathf.Clamp01(elapsed / duration);
-
-            yield return null; // Wait until the next frame
+            audioF.Play();
+            foundScreen.SetActive(true);
+            yield return new WaitForSecondsRealtime(0.5f);
+            foundScreen.SetActive(false);
+            isScanning = false;
+        } else
+        {
+            audioN.Play();
+            notFoundScreen.SetActive(true);
+            yield return new WaitForSecondsRealtime(.5f);
+            notFoundScreen.SetActive(false);
+            isScanning = false;
         }
-
-        audioN.Play();
-        notFoundScreen.SetActive(true);
-        yield return new WaitForSecondsRealtime(.5f);
-        notFoundScreen.SetActive(false);
-        isScanning = false;
     }
 }

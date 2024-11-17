@@ -124,7 +124,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 100
+  m_Speed: 20
   m_Acceleration: 100
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -191,7 +191,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 5356cdb1ef43726459b45447e35d6ad1, type: 3}
   m_Resource: {fileID: 8300000, guid: 5356cdb1ef43726459b45447e35d6ad1, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
