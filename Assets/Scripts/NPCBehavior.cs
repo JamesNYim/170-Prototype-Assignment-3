@@ -3,24 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
 
     public NavMeshAgent agent;
-    public Transform pointOfInterest;
     private List<Vector3> poiList;  
     private List<GameObject> allPois;
     private bool isCriminal;
     private int currentPOIIndex = 0;
-
+    public AudioSource criminalVisitedSFX;
+    public GameObject timer;
+    private int visitedPOIs = 0;
+    
     float currentTime;
 
     protected virtual void initializeAIBehavior()
     {
         currentTime = Time.time;
 
-        if (agent == null)
-        {
+        if (agent == null) {
             agent = GetComponent<NavMeshAgent>();
             if (agent == null)
             {
@@ -73,14 +75,23 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
         initializeAIBehavior();
     }
     void Update() {
+            // If an agent reaches a POI
             if (agent != null && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance) {
                 if (isCriminal) {
                     Debug.Log("criminal: " + agent.name + " has visited a POI: " + currentPOIIndex);
+                    criminalVisitedSFX.Play(); 
+                    visitedPOIs++;
+
+                    // When the criminal visited all POI's start timer
+                    if (visitedPOIs == allPois.Count) {
+                        timer.SetActive(true);
+                        Debug.Log("timer start");
+                    }
                 }
                 MoveToNextPOI();
             }
         }
-
+    
     void MoveToNextPOI() {
         if (poiList == null || poiList.Count == 0 || agent == null) return;
         currentPOIIndex = (currentPOIIndex + 1) % poiList.Count;
