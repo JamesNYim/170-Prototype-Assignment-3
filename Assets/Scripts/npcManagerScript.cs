@@ -22,7 +22,8 @@ public class npcManagerScript : MonoBehaviour
     private int stringLen;
     private int currentLen;
 
-    public GameObject endScreen;
+    
+    
     public AudioSource au;
 
     void Start()
@@ -71,11 +72,11 @@ public class npcManagerScript : MonoBehaviour
 
     }
 
-    public void endGame()
+    public void endGame(GameObject endScene)
     {
         Time.timeScale = 0.0f;
         Cursor.lockState = CursorLockMode.None;
-        endScreen.SetActive(true);
+        endScene.SetActive(true);
         au.Stop();
     }
 

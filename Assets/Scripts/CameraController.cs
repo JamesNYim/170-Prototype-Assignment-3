@@ -13,16 +13,20 @@ public class CameraController : MonoBehaviour {
     private float rotationZ = 0f;
 
     public int playerLives = 5;
+    public TMP_Text strikesText;
     public TMP_Text statusText; 
     public Material markedMaterial;
     GameObject mainCamera;
     public LayerMask worldLayer;
     public CameraScript currentCamera = null;
+    public GameObject livesEndScreen;
 
     void Start() {
         Cursor.lockState = CursorLockMode.Locked;
         mainCamera = GameObject.Find("Main Camera");
         SetCameraPos(currentCamera);
+        
+
     }
     public void SetCameraPos(CameraScript newCam){
         currentCamera = newCam;
@@ -78,6 +82,7 @@ public class CameraController : MonoBehaviour {
                 else {
                     Debug.Log(hit.collider.gameObject.name + " is not a criminal.");
                     npcBehavior.SetMaterial(markedMaterial);
+                    livesUpdate();
                     
                 }
             }
@@ -116,6 +121,14 @@ public class CameraController : MonoBehaviour {
         this.enabled = false;
     }
 
+    private void livesUpdate() {
+        playerLives--;
+        Debug.Log(playerLives);
+        strikesText.text = "Lives Left: " + playerLives;
+        if (playerLives <= 0) {
+           npcManagerScript.instance.endGame(livesEndScreen); 
+        }
+    }
     
 
 }

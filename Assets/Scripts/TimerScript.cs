@@ -8,6 +8,7 @@ public class Timer : MonoBehaviour
 {
     public float timeRemaining = 10;
     public TextMeshProUGUI timeText;
+    public GameObject bombEndScreen;
 
     private void Start()
     {
@@ -23,7 +24,7 @@ public class Timer : MonoBehaviour
         else
         {
             timeRemaining = 0;
-            npcManagerScript.instance.endGame();
+            npcManagerScript.instance.endGame(bombEndScreen);
         }
     }
 
