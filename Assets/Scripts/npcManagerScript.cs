@@ -14,9 +14,6 @@ public class npcManagerScript : MonoBehaviour
     List<GameObject> npcList;
     int NPC_COUNT = 10;
 
-    public GameObject map;
-    public bool isOn;
-
     public GameObject timer;
 
     public GameObject banner;
@@ -71,25 +68,7 @@ public class npcManagerScript : MonoBehaviour
 
     private void Update()
     {
-        isOn = !isOn;
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            if (isOn)
-            {
-                Cursor.lockState = CursorLockMode.None;
-            } else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-            }
-            map.SetActive(isOn);    
-        }
-    }
 
-    public IEnumerator bringMap()
-    {
-
-        yield return new WaitForSeconds(1);
-        map.SetActive(!isOn);
     }
 
     public void endGame()

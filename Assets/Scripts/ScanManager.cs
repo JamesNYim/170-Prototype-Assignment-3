@@ -59,14 +59,14 @@ public class ScanManager : MonoBehaviour
         {
             audioF.Play();
             foundScreen.SetActive(true);
-            yield return new WaitForSecondsRealtime(0.5f);
+            yield return new WaitForSecondsRealtime(1.0f);
             foundScreen.SetActive(false);
             isScanning = false;
         } else
         {
             audioN.Play();
             notFoundScreen.SetActive(true);
-            yield return new WaitForSecondsRealtime(.5f);
+            yield return new WaitForSecondsRealtime(1.0f);
             notFoundScreen.SetActive(false);
             isScanning = false;
         }

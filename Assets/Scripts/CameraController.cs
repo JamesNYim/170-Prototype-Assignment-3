@@ -15,85 +15,50 @@ public class CameraController : MonoBehaviour {
     public int playerLives = 5;
     public TMP_Text statusText; 
     public Material markedMaterial;
-    private int cameraIndex;
     GameObject mainCamera;
-    //private List<Vector3> cameraList= new List<Vector3>{
-    //    new Vector3(-402.7f, 100.0f, -347.6f), 
-    //    new Vector3(-395.2f, 100.0f, 401.7f), 
-    //    new Vector3(-33.0f, 100.0f, -353.59f), 
-    //    new Vector3(51.0f, 100.0f, 330.0f), 
-    //    new Vector3(18.0f, 100.0f, 76.0f), 
-    //    new Vector3(419.58f, 100.0f, -348.83f), 
-    //    new Vector3(419.58f, 100.0f, -42.1f), 
-    //    new Vector3(334.0f, 100.0f, 216.0f)
-    //};
-    public GameObject[] cameraList;
+    public LayerMask worldLayer;
+    public CameraScript currentCamera = null;
 
     void Start() {
         Cursor.lockState = CursorLockMode.Locked;
         mainCamera = GameObject.Find("Main Camera");
-        SetCameraPos(0);
-        cameraIndex = 0;
+        SetCameraPos(currentCamera);
     }
-    public void SetCameraPos(int which){
-        mainCamera.transform.position = cameraList[which].transform.GetChild(1).position;
-        mainCamera.transform.LookAt(cameraList[which].transform.GetChild(2).position);
+    public void SetCameraPos(CameraScript newCam){
+        currentCamera = newCam;
+        mainCamera.transform.position = newCam.cameraPos;
+        mainCamera.transform.LookAt(newCam.lookAtPos);
         Vector3 fromEuler = mainCamera.transform.localEulerAngles;
         rotationY = fromEuler.y;
         rotationX = fromEuler.x;
     }
 
-    public void nextCamera()
-    {
-        cameraIndex++;
-        if (cameraIndex >= cameraList.Length)
-        {
-            cameraIndex = 0;
-        }
-        SetCameraPos(cameraIndex);
-    }
-
-    public void previousCamera()
-    {
-        cameraIndex--;
-        if(cameraIndex < 0)
-        {
-            cameraIndex = cameraList.Length - 1;
-        }
-        SetCameraPos(cameraIndex);
-    }
-
     void Update() {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            previousCamera();
-        } else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            nextCamera();
-        } else
-        {
-            if (!npcManagerScript.instance.isOn)
-            {
+        float mouseX = Input.GetAxis("Mouse X") * sensitivityY * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivityX * Time.deltaTime;
+        rotationY += mouseX;
+        rotationX -= mouseY;
+        transform.localRotation = Quaternion.Euler(rotationX, rotationY, rotationZ);
 
-                float mouseX = Input.GetAxis("Mouse X") * sensitivityY * Time.deltaTime;
-                float mouseY = Input.GetAxis("Mouse Y") * sensitivityX * Time.deltaTime;
-                rotationY += mouseX;
-                rotationX -= mouseY;
-                transform.localRotation = Quaternion.Euler(rotationX, rotationY, rotationZ);
-
-                // Handle object clicking
-                if (Input.GetMouseButtonDown(0))
-                {  // Left mouse button
-                    ClickObject();
-                }
-            }
+        // Handle object clicking
+        if (Input.GetMouseButtonDown(0))
+        {  // Left mouse button
+            ClickObject();
+        }
+        else if (Input.GetMouseButtonDown(1))
+        {
+            clickCamera();
+        } else if(Input.GetKeyDown(KeyCode.S) && currentCamera && currentCamera.room)
+        {
+            ScanManager.instance.ScanRoom(currentCamera.room);
         }
     }
 
     // Method to cast a ray and detect objects on click
     private void ClickObject() {
         // Cast a ray from the camera to the mouse position
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hit;
 
         // Check if the ray hits any collider in the scene
@@ -119,6 +84,22 @@ public class CameraController : MonoBehaviour {
         }
     }
     
+    private void clickCamera()
+    {
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        RaycastHit hit;
+
+        if(Physics.Raycast(ray, out hit, Mathf.Infinity, ~worldLayer))
+        {
+            GameObject clickedObject = hit.collider.gameObject;
+            Debug.Log("Clicked on object: " + clickedObject.name);
+            CameraScript camera = hit.collider.GetComponent<CameraScript>();
+            if (camera != null)
+            {
+                SetCameraPos(camera);
+            }
+        }
+    }
 
     void EndGame(bool success)
     {
