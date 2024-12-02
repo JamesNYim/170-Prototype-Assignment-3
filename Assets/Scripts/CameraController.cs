@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 public class CameraController : MonoBehaviour {
     public float sensitivityX = 100f;
     public float sensitivityY = 100f;
@@ -16,37 +17,40 @@ public class CameraController : MonoBehaviour {
     public Material markedMaterial;
     private int cameraIndex;
     GameObject mainCamera;
-    private List<Vector3> cameraList= new List<Vector3>{
-        new Vector3(-402.7f, 100.0f, -347.6f), 
-        new Vector3(-395.2f, 100.0f, 401.7f), 
-        new Vector3(-33.0f, 100.0f, -353.59f), 
-        new Vector3(51.0f, 100.0f, 330.0f), 
-        new Vector3(18.0f, 100.0f, 76.0f), 
-        new Vector3(419.58f, 100.0f, -348.83f), 
-        new Vector3(419.58f, 100.0f, -42.1f), 
-        new Vector3(334.0f, 100.0f, 216.0f)
-    };
+    //private List<Vector3> cameraList= new List<Vector3>{
+    //    new Vector3(-402.7f, 100.0f, -347.6f), 
+    //    new Vector3(-395.2f, 100.0f, 401.7f), 
+    //    new Vector3(-33.0f, 100.0f, -353.59f), 
+    //    new Vector3(51.0f, 100.0f, 330.0f), 
+    //    new Vector3(18.0f, 100.0f, 76.0f), 
+    //    new Vector3(419.58f, 100.0f, -348.83f), 
+    //    new Vector3(419.58f, 100.0f, -42.1f), 
+    //    new Vector3(334.0f, 100.0f, 216.0f)
+    //};
+    public GameObject[] cameraList;
 
     void Start() {
         Cursor.lockState = CursorLockMode.Locked;
         mainCamera = GameObject.Find("Main Camera");
-        mainCamera.transform.position = cameraList[0];
-        mainCamera.transform.LookAt(new Vector3(0, 0, 0));
+        SetCameraPos(0);
         cameraIndex = 0;
     }
     public void SetCameraPos(int which){
-        mainCamera.transform.position = cameraList[which - 1];
+        mainCamera.transform.position = cameraList[which].transform.GetChild(1).position;
+        mainCamera.transform.LookAt(cameraList[which].transform.GetChild(2).position);
+        Vector3 fromEuler = mainCamera.transform.localEulerAngles;
+        rotationY = fromEuler.y;
+        rotationX = fromEuler.x;
     }
 
     public void nextCamera()
     {
         cameraIndex++;
-        if (cameraIndex >= cameraList.Count)
+        if (cameraIndex >= cameraList.Length)
         {
             cameraIndex = 0;
         }
-        mainCamera.transform.position = cameraList[cameraIndex];
-        mainCamera.transform.LookAt(npcManagerScript.instance.gameObject.transform.position);
+        SetCameraPos(cameraIndex);
     }
 
     public void previousCamera()
@@ -54,10 +58,9 @@ public class CameraController : MonoBehaviour {
         cameraIndex--;
         if(cameraIndex < 0)
         {
-            cameraIndex = cameraList.Count - 1;
+            cameraIndex = cameraList.Length - 1;
         }
-        mainCamera.transform.position = cameraList[cameraIndex];
-        mainCamera.transform.LookAt(npcManagerScript.instance.gameObject.transform.position);
+        SetCameraPos(cameraIndex);
     }
 
     void Update() {
@@ -71,16 +74,9 @@ public class CameraController : MonoBehaviour {
         {
             if (!npcManagerScript.instance.isOn)
             {
-                // Handle camera rotation
+
                 float mouseX = Input.GetAxis("Mouse X") * sensitivityY * Time.deltaTime;
                 float mouseY = Input.GetAxis("Mouse Y") * sensitivityX * Time.deltaTime;
-
-                if (Input.GetMouseButton(1))
-                {
-                    float mouseZ = Input.GetAxis("Mouse X") * sensitivityZ * Time.deltaTime;
-                    rotationZ += mouseZ;
-                }
-
                 rotationY += mouseX;
                 rotationX -= mouseY;
                 transform.localRotation = Quaternion.Euler(rotationX, rotationY, rotationZ);
