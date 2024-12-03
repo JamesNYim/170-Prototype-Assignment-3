@@ -4,6 +4,8 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Collections;
+using Unity.VisualScripting;
 public class CameraController : MonoBehaviour {
     public float sensitivityX = 100f;
     public float sensitivityY = 100f;
@@ -18,7 +20,7 @@ public class CameraController : MonoBehaviour {
     public TMP_Text statusText;
     public Material markedMaterial;
     public LayerMask worldLayer;
-    public CameraScript currentCamera = null;
+    public CameraScript currentCamera;
     public GameObject livesEndScreen;
     public float lastClickedTime = 0;
     Sprite health2;
@@ -36,6 +38,7 @@ public class CameraController : MonoBehaviour {
         health1 = Resources.Load<Sprite>("1Charge");
         lastClickedTime = Time.time;
     }
+
     public void SetCameraPos(CameraScript newCam){
         currentCamera = newCam;
         Camera.main.transform.position = newCam.cameraPos;
@@ -132,7 +135,7 @@ public class CameraController : MonoBehaviour {
     {
         if (success)
         {
-            statusText.text = "Congratulations! You found a criminal. You won!";
+            statusText.text = "Congratulations! You found the criminal. You won!";
         }
         else
         {
