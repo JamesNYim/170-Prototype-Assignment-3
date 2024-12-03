@@ -176,6 +176,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 2320370260986324378}
+  runAwayPOIs:
+  - {fileID: 7264900707325682328, guid: 0a579ccc8fd18074a93ec3d349c4f7c1, type: 3}
+  - {fileID: 7264900707325682328, guid: 0a579ccc8fd18074a93ec3d349c4f7c1, type: 3}
+  - {fileID: 7264900707325682328, guid: 0a579ccc8fd18074a93ec3d349c4f7c1, type: 3}
+  - {fileID: 7264900707325682328, guid: 0a579ccc8fd18074a93ec3d349c4f7c1, type: 3}
+  - {fileID: 7264900707325682328, guid: 0a579ccc8fd18074a93ec3d349c4f7c1, type: 3}
   criminalVisitedSFX: {fileID: 3219677647337195381}
   timer: {fileID: 7715830309378897586, guid: 3a0eba414a8a56b46bafe0a7befe38d2, type: 3}
 --- !u!82 &3219677647337195381

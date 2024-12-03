@@ -9,11 +9,13 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
     public NavMeshAgent agent;
     private List<Vector3> poiList;  
     private List<GameObject> allPois;
+    public List<GameObject> runAwayPOIs;
     private bool isCriminal;
     private int currentPOIIndex = 0;
     public AudioSource criminalVisitedSFX;
     public GameObject timer;
     private int visitedPOIs = 0;
+    private bool isRunningAway;
     
     float currentTime;
 
@@ -32,6 +34,8 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
 
         allPois = new List<GameObject>(GameObject.FindGameObjectsWithTag("poitag"));
         poiList = new List<Vector3>();
+
+        runAwayPOIs = new List<GameObject>(GameObject.FindGameObjectsWithTag("runAwayPOI"));
 
         if (allPois.Count == 0)
         {
@@ -72,28 +76,39 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
 
     void Start() {
         initializeAIBehavior();
+        isRunningAway = false;
     }
     void Update() {
             // If an agent reaches a POI
         if (agent != null && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance) {
             if (isCriminal) {
-                Debug.Log("criminal: " + agent.name + " has visited a POI: " + currentPOIIndex);
-                criminalVisitedSFX.Play(); 
-                visitedPOIs++;
-
-                // When the criminal visited all POI's start timer
-                if (visitedPOIs == allPois.Count) {
-                    npcManagerScript.instance.callEndgameTimer();
+                if (isRunningAway) {
+                    isRunningAway = false;
+                    agent.speed = 20f;
+                    moveToCurrentPOI();
+                    return;
                 }
-
-                // banner stuff
-                npcManagerScript.instance.StartCoroutine("typeString");
+                else {
+                    Debug.Log("criminal: " + agent.name + " has visited a POI: " + currentPOIIndex);
+                    criminalVisitedSFX.Play(); 
+                    visitedPOIs++;
+                    // When the criminal visited all POI's start timer
+                    if (visitedPOIs == allPois.Count) {
+                        npcManagerScript.instance.callEndgameTimer();
+                    }
+                    // banner stuff
+                    npcManagerScript.instance.StartCoroutine("typeString");
+                }
+                
             }
             MoveToNextPOI();
         }
     }
 
-    
+    void moveToCurrentPOI() {
+        if (poiList == null || poiList.Count == 0 || agent == null) return;
+        agent.SetDestination(poiList[currentPOIIndex]);
+    }
     void MoveToNextPOI() {
         if (poiList == null || poiList.Count == 0 || agent == null) return;
         currentPOIIndex = (currentPOIIndex + 1) % poiList.Count;
@@ -107,6 +122,17 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
             list[i] = list[randomIndex];
             list[randomIndex] = temp;
         }
+    }
+
+    public void runAway() {
+
+        isRunningAway = true;
+        agent.speed = 100f;
+        // Get a random index from the list
+        int randomIndex = UnityEngine.Random.Range(0, runAwayPOIs.Count);
+        // Retrieve the element at the random index
+        Vector3 randomPOI = runAwayPOIs[randomIndex].transform.position;
+        agent.SetDestination(randomPOI);
     }
 
     public void SetCriminalStatus(bool status) {

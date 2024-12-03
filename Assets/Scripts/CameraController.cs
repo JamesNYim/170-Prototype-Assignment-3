@@ -13,6 +13,7 @@ public class CameraController : MonoBehaviour {
     private float rotationZ = 0f;
 
     public int playerLives = 5;
+    public int runAwayLives = 3;
     public TMP_Text strikesText;
     public TMP_Text statusText; 
     public Material markedMaterial;
@@ -77,7 +78,11 @@ public class CameraController : MonoBehaviour {
                 // Call isCriminal method to check if this NPC is a criminal
                 if (npcBehavior.getCriminalStatus()) {
                     Debug.Log(hit.collider.gameObject.name + " is a criminal!");
-                    EndGame(true);
+                    npcBehavior.runAway();
+                    runAwayLives--;
+                    if (runAwayLives <= 0) {
+                        EndGame(true);
+                    }
                 }
                 else {
                     Debug.Log(hit.collider.gameObject.name + " is not a criminal.");
