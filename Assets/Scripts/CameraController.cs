@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +22,15 @@ public class CameraController : MonoBehaviour {
     public LayerMask worldLayer;
     public CameraScript currentCamera = null;
     public GameObject livesEndScreen;
-
+    public float lastClickedTime = 0;
+    Sprite health2;
+    Sprite health1;
     void Start() {
         Cursor.lockState = CursorLockMode.Locked;
         mainCamera = GameObject.Find("Main Camera");
         SetCameraPos(currentCamera);
-        
-
+        health2 = Resources.Load<Sprite>("2Charge");
+        health1 = Resources.Load<Sprite>("1Charge");
     }
     public void SetCameraPos(CameraScript newCam){
         currentCamera = newCam;
@@ -76,7 +79,9 @@ public class CameraController : MonoBehaviour {
              NPCBehavior npcBehavior = hit.collider.GetComponent<NPCBehavior>();
             if (npcBehavior != null) {
                 // Call isCriminal method to check if this NPC is a criminal
-                if (npcBehavior.getCriminalStatus()) {
+                float timeDif = Time.time - lastClickedTime;
+                if (npcBehavior.getCriminalStatus() && (timeDif > 3)) {
+                    lastClickedTime = Time.time;
                     Debug.Log(hit.collider.gameObject.name + " is a criminal!");
                     npcBehavior.runAway();
                     runAwayLives--;
@@ -129,7 +134,13 @@ public class CameraController : MonoBehaviour {
     private void livesUpdate() {
         playerLives--;
         Debug.Log(playerLives);
-        strikesText.text = "Lives Left: " + playerLives;
+        //strikesText.text = "Lives Left: " + playerLives;
+        if(playerLives == 3){
+            GameObject.Find("healthbar").GetComponent<Image>().sprite = health2;
+        }
+        if(playerLives == 1){
+            GameObject.Find("healthbar").GetComponent<Image>().sprite = health1;
+        }
         if (playerLives <= 0) {
            npcManagerScript.instance.endGame(livesEndScreen); 
         }
