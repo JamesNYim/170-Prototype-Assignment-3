@@ -13,32 +13,37 @@ public class CameraController : MonoBehaviour {
     private float rotationY = 0f;
     private float rotationZ = 0f;
 
-    public int playerLives = 5;
+    public int playerLives = 3;
     public int runAwayLives = 3;
-    public TMP_Text strikesText;
-    public TMP_Text statusText; 
+    public TMP_Text statusText;
     public Material markedMaterial;
-    GameObject mainCamera;
     public LayerMask worldLayer;
     public CameraScript currentCamera = null;
     public GameObject livesEndScreen;
     public float lastClickedTime = 0;
     Sprite health2;
     Sprite health1;
+    public TextMeshProUGUI roomText;
+    public Slider crosshair;
+
+    public GameObject healthBar;
+    public GameObject enemyCharge;
+
     void Start() {
         Cursor.lockState = CursorLockMode.Locked;
-        mainCamera = GameObject.Find("Main Camera");
         SetCameraPos(currentCamera);
         health2 = Resources.Load<Sprite>("2Charge");
         health1 = Resources.Load<Sprite>("1Charge");
+        lastClickedTime = Time.time;
     }
     public void SetCameraPos(CameraScript newCam){
         currentCamera = newCam;
-        mainCamera.transform.position = newCam.cameraPos;
-        mainCamera.transform.LookAt(newCam.lookAtPos);
-        Vector3 fromEuler = mainCamera.transform.localEulerAngles;
+        Camera.main.transform.position = newCam.cameraPos;
+        Camera.main.transform.LookAt(newCam.lookAtPos);
+        Vector3 fromEuler = Camera.main.transform.localEulerAngles;
         rotationY = fromEuler.y;
         rotationX = fromEuler.x;
+        roomText.text = newCam.room.roomName;
     }
 
     void Update() {
@@ -48,12 +53,15 @@ public class CameraController : MonoBehaviour {
         rotationX -= mouseY;
         transform.localRotation = Quaternion.Euler(rotationX, rotationY, rotationZ);
 
+        float timeDif = Time.time - lastClickedTime;
+        timeDif = Mathf.Min(3.0f, timeDif);
+        crosshair.value = timeDif / 3.0f;
         // Handle object clicking
         if (Input.GetMouseButtonDown(0))
         {  // Left mouse button
-            ClickObject();
+            ClickObject(timeDif);
         }
-        else if (Input.GetMouseButtonDown(1))
+        else if (Input.GetKeyDown(KeyCode.E))
         {
             clickCamera();
         } else if(Input.GetKeyDown(KeyCode.S) && currentCamera && currentCamera.room)
@@ -63,10 +71,11 @@ public class CameraController : MonoBehaviour {
     }
 
     // Method to cast a ray and detect objects on click
-    private void ClickObject() {
+    private void ClickObject(float timeDif) {
         // Cast a ray from the camera to the mouse position
         //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 500.0f, Color.red, 50.0f);
         RaycastHit hit;
 
         // Check if the ray hits any collider in the scene
@@ -76,15 +85,19 @@ public class CameraController : MonoBehaviour {
 
             // Optionally, you can trigger a specific action or method on the clicked object here
             // Example: if the object has a specific component, you can access it like this:
-             NPCBehavior npcBehavior = hit.collider.GetComponent<NPCBehavior>();
-            if (npcBehavior != null) {
+            NPCBehavior npcBehavior = hit.collider.GetComponent<NPCBehavior>();
+            if (npcBehavior != null && (timeDif >= 3.0f)) {
+                lastClickedTime = Time.time;
                 // Call isCriminal method to check if this NPC is a criminal
-                float timeDif = Time.time - lastClickedTime;
-                if (npcBehavior.getCriminalStatus() && (timeDif > 3)) {
-                    lastClickedTime = Time.time;
+                if (npcBehavior.getCriminalStatus()) {
                     Debug.Log(hit.collider.gameObject.name + " is a criminal!");
                     npcBehavior.runAway();
                     runAwayLives--;
+                    if(npcManagerScript.instance.timer.activeSelf)
+                    {
+                        runAwayLives = 0;
+                    }
+                    enemyLivesUpdate();
                     if (runAwayLives <= 0) {
                         EndGame(true);
                     }
@@ -93,7 +106,6 @@ public class CameraController : MonoBehaviour {
                     Debug.Log(hit.collider.gameObject.name + " is not a criminal.");
                     npcBehavior.SetMaterial(markedMaterial);
                     livesUpdate();
-                    
                 }
             }
         }
@@ -133,18 +145,28 @@ public class CameraController : MonoBehaviour {
 
     private void livesUpdate() {
         playerLives--;
-        Debug.Log(playerLives);
-        //strikesText.text = "Lives Left: " + playerLives;
         if(playerLives == 3){
-            GameObject.Find("healthbar").GetComponent<Image>().sprite = health2;
+            healthBar.GetComponent<Image>().sprite = health2;
         }
         if(playerLives == 1){
-            GameObject.Find("healthbar").GetComponent<Image>().sprite = health1;
+            healthBar.GetComponent<Image>().sprite = health1;
         }
         if (playerLives <= 0) {
            npcManagerScript.instance.endGame(livesEndScreen); 
         }
     }
-    
+
+    private void enemyLivesUpdate()
+    {
+        if (runAwayLives == 2)
+        {
+            enemyCharge.GetComponent<Image>().sprite = health2;
+        }
+        if (playerLives == 1)
+        {
+            enemyCharge.GetComponent<Image>().sprite = health1;
+        }
+    }
+
 
 }

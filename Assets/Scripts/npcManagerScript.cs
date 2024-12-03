@@ -25,7 +25,9 @@ public class npcManagerScript : MonoBehaviour
     public float flickerInterval = 0.1f;
     public float blackoutDuration = 5f;
     public GameObject blackPanel;
-
+    public GameObject enemyCharges;
+    public GameObject enemyChargeLabel;
+    public GameObject backGround;
 
     public AudioSource au;
 
@@ -67,6 +69,9 @@ public class npcManagerScript : MonoBehaviour
     public void callEndgameTimer()
     {
         timer.SetActive(true);
+        backGround.SetActive(true);
+        enemyCharges.SetActive(false);
+        enemyChargeLabel.SetActive(false);
         return;
     }
 

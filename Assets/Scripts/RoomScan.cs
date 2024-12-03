@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class RoomScan : MonoBehaviour
 {
     public bool isInRoom;
+    public string roomName;
 
     private void Start()
     {
