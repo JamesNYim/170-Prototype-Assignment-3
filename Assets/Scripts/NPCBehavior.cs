@@ -16,7 +16,7 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
     public GameObject timer;
     private int visitedPOIs = 0;
     private bool isRunningAway;
-    
+
     float currentTime;
 
     protected virtual void initializeAIBehavior()
@@ -125,7 +125,7 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
     }
 
     public void runAway() {
-
+        npcManagerScript.instance.StartFlicker();
         isRunningAway = true;
         agent.speed = 100f;
         // Get a random index from the list

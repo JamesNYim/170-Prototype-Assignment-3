@@ -135,7 +135,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 2
 --- !u!114 &2320370260986324379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,7 +149,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 2320370260986324378}
-  pointOfInterest: {fileID: 0}
+  runAwayPOIs: []
+  criminalVisitedSFX: {fileID: 0}
+  timer: {fileID: 0}
 --- !u!54 &2320370260986324353
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -190,4 +192,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 2320370260986324378}
-  pointOfInterest: {fileID: 0}
+  runAwayPOIs: []
+  criminalVisitedSFX: {fileID: 0}
+  timer: {fileID: 0}

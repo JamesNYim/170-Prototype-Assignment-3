@@ -21,9 +21,12 @@ public class npcManagerScript : MonoBehaviour
     private string message = "CRIMINAL HAS VISITED ANOTHER POINT OF INTEREST";
     private int stringLen;
     private int currentLen;
+    public float flickerDuration = 0.75f;
+    public float flickerInterval = 0.1f;
+    public float blackoutDuration = 5f;
+    public GameObject blackPanel;
 
-    
-    
+
     public AudioSource au;
 
     void Start()
@@ -86,6 +89,33 @@ public class npcManagerScript : MonoBehaviour
         Time.timeScale = 1.0f;
         Cursor.lockState = CursorLockMode.Locked;
         SceneManager.LoadScene("SampleScene");
+    }
+
+    public void StartFlicker()
+    {
+        StartCoroutine(FlickerCoroutine());
+    }
+
+    private IEnumerator FlickerCoroutine()
+    {
+        float elapsed = 0f;
+
+        // Flicker the screen on and off
+        while (elapsed < flickerDuration)
+        {
+            blackPanel.SetActive(!blackPanel.activeSelf); // Toggle panel visibility
+            yield return new WaitForSeconds(flickerInterval); // Wait for the interval
+            elapsed += flickerInterval;
+        }
+
+        // Ensure the screen is fully black after flickering
+        blackPanel.SetActive(true);
+
+        // Wait for the blackout duration
+        yield return new WaitForSeconds(blackoutDuration);
+
+        // Restore the screen to normal
+        blackPanel.SetActive(false);
     }
 }
 
