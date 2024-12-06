@@ -75,10 +75,7 @@ public class npcManagerScript : MonoBehaviour
         return;
     }
 
-    private void Update()
-    {
-
-    }
+    
 
     public void endGame(GameObject endScene)
     {

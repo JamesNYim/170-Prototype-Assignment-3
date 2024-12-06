@@ -36,6 +36,7 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
         poiList = new List<Vector3>();
 
         runAwayPOIs = new List<GameObject>(GameObject.FindGameObjectsWithTag("runAwayPOI"));
+        
 
         if (allPois.Count == 0)
         {
@@ -51,8 +52,9 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
             }
             ShuffleList(poiList);
         }
-        else
+        else // if ur a civilian
         {
+            allPois.AddRange(runAwayPOIs);
             int howManyPOIs = UnityEngine.Random.Range(1, allPois.Count);
             List<GameObject> tempPois = new List<GameObject>(allPois);
             for (int i = 0; i < howManyPOIs; i++)
