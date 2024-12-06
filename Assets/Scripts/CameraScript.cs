@@ -6,6 +6,7 @@ public class CameraScript : MonoBehaviour
     public Vector3 cameraPos;
     public Vector3 lookAtPos;
     public RoomScan room;
+    public Vector2 UIPosition;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

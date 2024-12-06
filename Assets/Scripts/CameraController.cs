@@ -33,8 +33,15 @@ public class CameraController : MonoBehaviour {
     public TMP_Text criminalLivesText;
     //public GameObject healthBar;
     //public GameObject enemyCharge;
+    public GameObject camInstructions;
+    private GameObject hoveredObject;
+    private CameraScript hoveredCam;
+    public GameObject map;
+    public bool mapActive;
+    public GameObject camPosIcon;
 
     void Start() {
+        mapActive = false;
         Cursor.lockState = CursorLockMode.Locked;
         SetCameraPos(currentCamera);
         criminalLivesText.text = "Criminal Lives: " + runAwayLives;
@@ -52,6 +59,7 @@ public class CameraController : MonoBehaviour {
         rotationY = fromEuler.y;
         rotationX = fromEuler.x;
         roomText.text = newCam.room.roomName;
+        camPosIcon.transform.localPosition = newCam.UIPosition;
     }
 
     void Update() {
@@ -60,6 +68,35 @@ public class CameraController : MonoBehaviour {
         rotationY += mouseX;
         rotationX -= mouseY;
         transform.localRotation = Quaternion.Euler(rotationX, rotationY, rotationZ);
+
+        if (hoveredObject)
+        {
+            hoveredCam = hoveredObject.GetComponent<CameraScript>();
+            if (hoveredCam != null)
+            {
+                if (!camInstructions.activeSelf)
+                {
+                    camInstructions.SetActive(true);
+                }
+            }
+            else
+            {
+                if (camInstructions.activeSelf)
+                {
+                    camInstructions.SetActive(false);
+                }
+            }
+        } else
+        {
+            if (hoveredCam)
+            {
+                if (camInstructions.activeSelf)
+                {
+                    camInstructions.SetActive(false);
+                }
+                hoveredCam = null;
+            }
+        }
 
         float timeDif = Time.time - lastClickedTime;
         timeDif = Mathf.Min(3.0f, timeDif);
@@ -77,6 +114,23 @@ public class CameraController : MonoBehaviour {
         {
             statusText.text = "Scanning the room for criminal";
             ScanManager.instance.ScanRoom(currentCamera.room);
+        } else if (Input.GetKeyDown(KeyCode.Tab)) {
+            map.SetActive(!mapActive);
+            mapActive = !mapActive;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, worldLayer))
+        {
+            hoveredObject = hit.collider.gameObject;
+        } else
+        {
+            hoveredObject = null;
         }
     }
 
@@ -86,7 +140,7 @@ public class CameraController : MonoBehaviour {
         //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         statusText.text = "Scanner on cooldown";
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 500.0f, Color.red, 50.0f); // <--- Debug
+        //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 500.0f, Color.red, 50.0f); // <--- Debug
         RaycastHit hit;
 
         // Check if the ray hits any collider in the scene
@@ -124,18 +178,21 @@ public class CameraController : MonoBehaviour {
     
     private void clickCamera()
     {
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-        //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 500.0f, Color.red, 50.0f); // <--- Debug
-        RaycastHit hit;
+        //Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        ////Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 500.0f, Color.red, 50.0f); // <--- Debug
+        //RaycastHit hit;
 
-        if(Physics.Raycast(ray, out hit, Mathf.Infinity, worldLayer))
-        {
-            GameObject clickedObject = hit.collider.gameObject;
-            CameraScript camera = hit.collider.GetComponent<CameraScript>();
-            if (camera != null)
-            {
-                SetCameraPos(camera);
-            }
+        //if(Physics.Raycast(ray, out hit, Mathf.Infinity, worldLayer))
+        //{
+        //    GameObject clickedObject = hit.collider.gameObject;
+        //    CameraScript camera = hit.collider.GetComponent<CameraScript>();
+        //    if (camera != null)
+        //    {
+        //        SetCameraPos(camera);
+        //    }
+        //}
+        if(hoveredCam) {
+            SetCameraPos(hoveredCam);
         }
     }
 
