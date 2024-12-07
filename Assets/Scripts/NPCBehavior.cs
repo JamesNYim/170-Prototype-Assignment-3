@@ -146,7 +146,7 @@ public class NPCBehavior : MonoBehaviour, IPointerClickHandler {
     }
 
    public void SetMaterial(Material material) {
-        GetComponent<Renderer>().material = material;
+        transform.GetChild(0).GetChild(0).GetComponent<SkinnedMeshRenderer>().material = material;
     }
     public void OnPointerClick(PointerEventData eventData) {
         Debug.Log("Are they a criminal? " + isCriminal);
