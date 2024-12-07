@@ -5,10 +5,12 @@ public class RoomScan : MonoBehaviour
 {
     public bool isInRoom;
     public string roomName;
+    public MeshRenderer roomRenderer;
 
     private void Start()
     {
         isInRoom = false;
+        roomRenderer = GetComponent<MeshRenderer>();
     }
 
     private void OnTriggerEnter(Collider other)
