@@ -5140,7 +5140,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6576423567315801610, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6576423567315801614, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
       propertyPath: m_RootOrder
@@ -9272,7 +9272,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6576423567315801610, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6576423567315801614, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
       propertyPath: m_RootOrder
@@ -9740,7 +9740,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6576423567315801610, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6576423567315801614, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
       propertyPath: m_RootOrder
@@ -21800,9 +21800,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 1228741463}
     m_Modifications:
     - target: {fileID: 6576423567315801608, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6576423567315801608, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 62e25ef75a2216f418d06453c9ad15cb, type: 2}
+    - target: {fileID: 6576423567315801608, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 79f94be177b69994d8110aa86af23ae1, type: 2}
     - target: {fileID: 6576423567315801609, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
       propertyPath: m_Size.x
       value: 3.5
@@ -21821,7 +21829,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6576423567315801610, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6576423567315801614, guid: 1fab9c123d0ee834cacc6fb07da82f77, type: 3}
       propertyPath: m_RootOrder
